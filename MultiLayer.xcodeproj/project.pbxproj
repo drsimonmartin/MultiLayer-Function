@@ -18,7 +18,7 @@
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		42D48488247D2CBB00AF2083 /* slab_multilayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = slab_multilayer.c; sourceTree = "<group>"; };
 		42D4848A247D2CC100AF2083 /* fitter_fun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fitter_fun.h; sourceTree = "<group>"; };
-		CAE8C6CF058E1938003543E6 /* InvErf.fitplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InvErf.fitplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAE8C6CF058E1938003543E6 /* MultiLayer.fitplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultiLayer.fitplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5BC7CDF03D1330C01A80122 /* proFit_interface.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = proFit_interface.c; path = ../../../Interfaces/C/proFit_interface.c; sourceTree = SOURCE_ROOT; };
 		F5BC7CE003D1330C01A80122 /* proFit_interface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = proFit_interface.h; path = ../../../Interfaces/C/proFit_interface.h; sourceTree = SOURCE_ROOT; };
 		F5BC7CE103D1330C01A80122 /* proFit_paramBlk.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = proFit_paramBlk.h; path = ../../../Interfaces/C/proFit_paramBlk.h; sourceTree = SOURCE_ROOT; };
@@ -76,7 +76,7 @@
 		19C28FB6FE9D52B211CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CAE8C6CF058E1938003543E6 /* InvErf.fitplugin */,
+				CAE8C6CF058E1938003543E6 /* MultiLayer.fitplugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,7 +112,7 @@
 			);
 			name = InvErf;
 			productName = plugin;
-			productReference = CAE8C6CF058E1938003543E6 /* InvErf.fitplugin */;
+			productReference = CAE8C6CF058E1938003543E6 /* MultiLayer.fitplugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -123,7 +123,7 @@
 			attributes = {
 				LastUpgradeCheck = 1020;
 			};
-			buildConfigurationList = CA48B7340B2C14EC00B45419 /* Build configuration list for PBXProject "InverseErf" */;
+			buildConfigurationList = CA48B7340B2C14EC00B45419 /* Build configuration list for PBXProject "MultiLayer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 1;
@@ -182,7 +182,8 @@
 					Carbon,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.quansoft.InvErf;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quansoft.Multilayer;
+				PRODUCT_NAME = MultiLayer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -205,7 +206,8 @@
 					Carbon,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.quansoft.InvErf;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quansoft.Multilayer;
+				PRODUCT_NAME = MultiLayer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -227,7 +229,8 @@
 					Carbon,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.quansoft.InvErf;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quansoft.Multilayer;
+				PRODUCT_NAME = MultiLayer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -357,7 +360,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		CA48B7340B2C14EC00B45419 /* Build configuration list for PBXProject "InverseErf" */ = {
+		CA48B7340B2C14EC00B45419 /* Build configuration list for PBXProject "MultiLayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA48B7350B2C14EC00B45419 /* Development */,

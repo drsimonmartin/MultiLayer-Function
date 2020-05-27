@@ -1,7 +1,13 @@
-// multiSlab neutron reflectivity simulator
+// multiLayer neutron reflectivity simulator
+/* see https://stackoverflow.com/questions/238980/how-to-change-the-name-of-an-ios-app
+ for details of how to change plugin name */
+
+
+//26 May 2020- set up to insert multilayers into the structure
 
 // 30 Jan 2006 remove GSL error function - use proFit version
 #include "proFit_interface.h"
+#include "fitter_fun.h"
 #ifndef __MACH__
 #include <fp.h>
 #endif
@@ -10,12 +16,13 @@
 // #include <gsl/gsl_sf_erf.h>
 
 #define SLABS 8
-// have six layers + top and bottoms
+// have six layers + top and bottoms if no repeat layers
+// make arrays over large so that memory access issues are reduced
 _Complex double g; /* a test var */
 /* some globals */
-double sld_array[SLABS]; /*array of sld */
-double thick_array[SLABS]; /*array of thickness */
-double rough_array[SLABS];/*array of roughness */
+double sld_array[MAXSLABS]; /*array of sld */
+double thick_array[MAXSLABS]; /*array of thickness */
+double rough_array[MAXSLABS];/*array of roughness */
 int nlayers; /*total layers in system */
 int nfunclayers; /* no of layers in functional part of model */
 
@@ -97,7 +104,7 @@ void InitializeFunc (
 	(*a0->mode)[7] = inactive;
 	SetPascalStr((*a0->name)[7],"\psld_3", maxParamNameLength);
 	
-	(*a0->value)[8]= 1.0; /* roughness 3 */
+	(*a0->value)[8]= 0.0; /* roughness 3 */
 	(*a0->lowest)[8]= 0.;
 	//(*a0->highest)[8] = 1.;
 	(*a0->mode)[8] = inactive;
@@ -262,71 +269,59 @@ ExtModulesParamBlock* pb)	/* the complete parameter block passed by pro Fit to t
 
 {
 	//#ifdef __leavein__
-	int i=0.;
+	
 	/* set up rho with a sld 'profile' of the system */
 	sld_array[0]=a[0];
 	rough_array[0]=0.;
 	thick_array[0]=0.;
     int total_slabs=SLABS+2*(int)a[25]; /* account for any mulitlayers in layer count*/
-    int j=1; // counting variable used to keep track of slabs
-    
-    /* check to see if need to insert a multilayer section */
-    if (total_slabs>SLABS)
-    {
-        // have to insert multilayer at correct point
-        for(i=1;i<SLABS-1;i++)
+    int j=1; // counting variable used to keep track of layers
+    int i=1;
+    while(i<total_slabs-1)
         {
-            if (i!=(int)a[26])
+            //WriteInt((SInt32)i);WriteInt((SInt32)j);Writeln("");
+            if (j!=(int)a[26]) // check to see if at ordinary layer–if so add parameter values
             {
                 // have ordinary layer
-                sld_array[j]=a[3*i-2];
-                rough_array[j]=a[3*i - 1];
-                thick_array[j]=a[3*i];
+                sld_array[i]=a[3*j-2];
+                rough_array[i]=a[3*j - 1];
+                thick_array[i]=a[3*j];
                 j++;
+                i++;
             } else // have to insert multilayer structure
             {
-                /* now insert multilayer */
+                /*  insert multilayer */
                 for (int k=1;k<=2*(int)a[25];k++)
                 {
+                    //WriteInt((SInt32)i);WriteInt((SInt32)k);Writeln("");
                     // check if k is even/odd, insert appropriate thickness, sld.
                     if(k % 2 == 0)
                     {
                         // is even
-                        sld_array[j]  =a[30];
-                        rough_array[j]=a[3*i - 1];
-                        thick_array[j]=a[29];
-                        j++;
+                        sld_array[i]  =a[30];
+                        rough_array[i]=a[3*(int)a[26] - 1];
+                        thick_array[i]=a[29];
+                        
                     }else
                     {
-                        sld_array[j]  =a[28];
-                        rough_array[j]=a[3*i - 1];
-                        thick_array[j]=a[27];
-                        j++;
+                        sld_array[i]  =a[28];
+                        rough_array[i]=a[3*(int)a[26] - 1];
+                        thick_array[i]=a[27];
+                        
                     }
-                    
+                    i++;
                 }
+                j++;
             }
             
         }
         //WriteNumber(j);
-    }else
-    {
-        // have ordinary system
-        for(i=1;i<SLABS-1;i++)
-        {
-            sld_array[j]=a[3*i-2];
-            rough_array[j]=a[3*i - 1];
-            thick_array[j]=a[3*i];
-            j++;
-        }
-        
-    }
     
     /* now set up substrate values */
-	sld_array[j]=a[19];
-	rough_array[j]=a[20];
-	thick_array[j]=0.;
-	// #endif
+	sld_array[i]=a[19];
+	rough_array[i]=a[20];
+	thick_array[i]=0.;
+	
     
     /* for (int l=0;l<=SLABS+2*(int)a[25];l++)
     {
@@ -441,7 +436,7 @@ ExtModulesParamBlock* pb)		/* the complete parameter block passed by pro Fit to 
 	sum=0.;
     			/************************************************************************************************/
 				nlayers=total_slabs-2;
-    Write("Nlayers=");WriteNumber(nlayers);
+    //Write("Nlayers=");WriteNumber(nlayers);
 if (Output(0)) // ordinary calculation of reflectivity
 {
 	sum=sum+ 0.135*CReflectivity(x-x*a[23],nlayers);
@@ -474,6 +469,7 @@ if(Output(1))
 {
 	// profile has been requested
 	y[1]=calcProfile(&x,total_slabs);
+    
 }
 if (Output(2)) // Calculate RQ^4
 {
@@ -507,7 +503,8 @@ if (Output(2)) // Calculate RQ^4
 if (Output(4))
 {
 	// return total thickness of sample - useful for SLD plots
-	y[4]=(a[3] + a[6] + a[9] + a[12] + a[15] + a[18]);
+	y[4]=(a[3] + a[6] + a[9] + a[12] + a[15] + a[18] + a[25]*(a[27]+a[29]));
+    
 }
 
 //*y=gsl_sf_erfc(-1000.);	

@@ -7,5 +7,5 @@
  *
  */
 
-#define MAXSLABS 1000 
+#define MAXSLABS 200
 #define MIN_SLD 1.e-7
